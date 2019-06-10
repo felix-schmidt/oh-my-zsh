@@ -199,7 +199,15 @@ prompt_hg() {
 
 # Dir: current working directory
 prompt_dir() {
-  prompt_segment blue $CURRENT_FG '%~'
+  if [[ $AGNOSTER_DIR_TRUNC_REPO == true ]] && \
+     $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
+    local git_root=$(git rev-parse --show-toplevel)
+    dir="$git_root:t${${PWD:A}#$~~git_root}"
+  else
+    dir='%~'
+  fi
+
+  prompt_segment blue $CURRENT_FG $dir
 }
 
 # Virtualenv: current working virtualenv
